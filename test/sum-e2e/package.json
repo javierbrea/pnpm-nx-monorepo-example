@@ -1,0 +1,12 @@
+{
+  "name": "sum-e2e",
+  "private": "true",
+  "description": "E2E tests of all sum packages",
+  "scripts": {
+    "test:e2e": "jest"
+  },
+  "dependencies": {
+    "sum-one": "workspace:*",
+    "sum-two": "workspace:*"
+  }
+}

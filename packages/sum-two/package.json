@@ -1,0 +1,12 @@
+{
+  "name": "sum-two",
+  "version": "1.0.0-beta.1",
+  "description": "Sums two to a given number",
+  "scripts": {
+    "build": "echo \"Built!\" && exit 0",
+    "test:unit": "jest"
+  },
+  "dependencies": {
+    "sum-one": "workspace:*"
+  }
+}
