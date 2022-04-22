@@ -15,8 +15,10 @@ jobs:
       - name: Get branch name
         run: |
             if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
+              echo "${{github.event.pull_request.base.ref}}"
               echo "::set-output name=branch::${{github.event.pull_request.base.ref}}"
             else
+              echo "${{github.ref_name}}"
               echo "::set-output name=branch::${{github.ref_name}}"
             fi
         id: get-branch-name
