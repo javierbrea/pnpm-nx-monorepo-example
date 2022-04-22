@@ -23,17 +23,17 @@ jobs:
         uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: ${{github.event.pull_request.base.ref}}
+      # Install Pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.1
+        with:
+          version: "6.x"
       # Install Node.js
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
           cache: 'pnpm'
-      # Install Pnpm
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.1
-        with:
-          version: "6.x"
       # Install workspace dependencies
       - name: Install dependencies
         run: pnpm install
