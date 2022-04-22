@@ -9,7 +9,7 @@ on:
   # Execute it on opening any pull request
   pull_request:
 jobs:
-  get-branch-info:
+  branch-info:
     runs-on: ubuntu-latest
     steps:
       - name: Get branch name
@@ -26,7 +26,7 @@ jobs:
       branch-name: ${{ steps.get-branch-name.outputs.name }}
   # Our first job
   get-affected:
-    needs: [get-branch-info]
+    needs: [branch-info]
     runs-on: ubuntu-latest
     steps:
       # Check out the repository
