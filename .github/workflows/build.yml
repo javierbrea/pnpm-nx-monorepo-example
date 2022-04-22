@@ -13,20 +13,18 @@ jobs:
   branch-info:
     runs-on: ubuntu-latest
     steps:
-      # Get branch name from one variable or another depending if we are in a PR or not
-      - name: Get branch name
-        id: get-branch-name
+      # Get branch name to compare with
+      - name: Get base branch name
+        id: get-base-branch-name
         run: |
             if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
-              echo "${{github.event.pull_request.base.ref}}"
               echo "::set-output name=branch::${{github.event.pull_request.base.ref}}"
             else
-              echo "${{github.ref_name}}"
-              echo "::set-output name=branch::${{github.ref_name}}"
+              echo "::set-output name=branch::main"
             fi
     outputs:
       # Export the branch name as output to be able to use it in other jobs
-      branch-name: ${{ steps.get-branch-name.outputs.branch }}
+      base-branch-name: ${{ steps.get-base-branch-name.outputs.branch }}
   # Get affected projects and tasks
   get-affected:
     needs: [branch-info]
@@ -40,7 +38,7 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: ${{needs.branch-info.outputs.branch-name}}
+          main-branch-name: ${{needs.branch-info.outputs.base-branch-name}}
       # Install Pnpm
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.1
@@ -58,6 +56,6 @@ jobs:
       - name: Get affected
         id: get-projects-arrays
         run: |
-            node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.branch-name}}
-            echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.branch-name}})"
-            echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.outputs.branch-name}})"
+            node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.base-branch-name}}
+            echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.base-branch-name}})"
+            echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.outputs.base-branch-name}})"
