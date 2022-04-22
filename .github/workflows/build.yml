@@ -35,10 +35,9 @@ jobs:
           fetch-depth: 0
       # Configure Nx to be able to detect changes between branches when we are in a PR
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        if: github.event_name == 'pull_request'
         uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: ${{github.event.pull_request.base.ref}}
+          main-branch-name: ${{needs.branch-info.outputs.branch-name}}
       # Install Pnpm
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.1
@@ -56,6 +55,6 @@ jobs:
       - name: Get affected
         id: get-projects-arrays
         run: |
-            node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.branch-name}}
-            echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.branch-name}})"
-            echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.branch-name}})"
+            node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.branch-name}}
+            echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.branch-name}})"
+            echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.outputs.branch-name}})"
