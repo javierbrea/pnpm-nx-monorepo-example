@@ -9,8 +9,22 @@ on:
   # Execute it on opening any pull request
   pull_request:
 jobs:
+  get-branch-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get branch name
+        run: |
+            if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
+              echo "::set-output name=branch::${{github.event.pull_request.base.ref}}"
+            else
+              echo "::set-output name=branch::${{github.ref_name}}"
+            fi
+        id: get-branch-name
+    outputs:
+      branch-name: ${{ steps.get-branch-name.outputs.name }}
   # Our first job
   get-affected:
+    needs: [get-branch-info]
     runs-on: ubuntu-latest
     steps:
       # Check out the repository
@@ -37,3 +51,8 @@ jobs:
       # Install workspace dependencies
       - name: Install dependencies
         run: pnpm install
+      - name: Get affected
+        id: get-projects-arrays
+        run: |
+            echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.branch-name}})"
+            echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.branch-name}})"
