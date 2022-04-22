@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get branch name
+        id: get-branch-name
         run: |
             if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
               echo "${{github.event.pull_request.base.ref}}"
@@ -21,9 +22,8 @@ jobs:
               echo "${{github.ref_name}}"
               echo "::set-output name=branch::${{github.ref_name}}"
             fi
-        id: get-branch-name
     outputs:
-      branch-name: ${{ steps.get-branch-name.outputs.name }}
+      branch-name: ${{ steps.get-branch-name.outputs.branch }}
   # Our first job
   get-affected:
     needs: [branch-info]
