@@ -9,9 +9,11 @@ on:
   # Execute it on opening any pull request
   pull_request:
 jobs:
+  # Get branch info
   branch-info:
     runs-on: ubuntu-latest
     steps:
+      # Get branch name from one variable or another depending if we are in a PR or not
       - name: Get branch name
         id: get-branch-name
         run: |
@@ -23,8 +25,9 @@ jobs:
               echo "::set-output name=branch::${{github.ref_name}}"
             fi
     outputs:
+      # Export the branch name as output to be able to use it in other jobs
       branch-name: ${{ steps.get-branch-name.outputs.branch }}
-  # Our first job
+  # Get affected projects and tasks
   get-affected:
     needs: [branch-info]
     runs-on: ubuntu-latest
