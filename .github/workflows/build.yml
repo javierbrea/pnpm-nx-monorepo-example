@@ -151,3 +151,14 @@ jobs:
           HUSKY_SKIP_INSTALL: 1
       - name: Test E2E
         run: pnpm nx test:e2e ${{ matrix.projectName }}
+  build-finished:
+    runs-on: ubuntu-latest
+    needs: [test-unit, test-e2e, test-e2e-windows]
+    if: |
+      always() &&
+      (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped') &&
+      (needs.test-e2e.result == 'success' || needs.test-e2e.result == 'skipped') &&
+      (needs.test-e2e-windows.result == 'success' || needs.test-e2e-windows.result == 'skipped')
+    steps:
+      - name: Trace
+        run: echo "All jobs finished"
