@@ -124,3 +124,30 @@ jobs:
       # Run test:e2e script in the affected project
       - name: Test E2E
         run: pnpm nx test:e2e ${{ matrix.projectName }}
+  test-e2e-windows:
+    runs-on: windows-2019
+    needs: [get-affected]
+    if: ${{ fromJson(needs.get-affected.outputs.test-e2e)[0] }}
+    strategy:
+      max-parallel: 2
+      matrix:
+        node: ["17.2.0", "18.0.0"]
+        projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.1
+        with:
+          version: "6.x"
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+        env:
+          HUSKY_SKIP_INSTALL: 1
+      - name: Test E2E
+        run: pnpm nx test:e2e ${{ matrix.projectName }}
