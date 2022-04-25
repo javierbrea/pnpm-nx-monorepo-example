@@ -26,3 +26,30 @@ jobs:
     outputs:
       # Export the branch name as output to be able to use it in other jobs
       base-branch-name: ${{ steps.get-base-branch-name.outputs.branch }}
+  get-affected:
+    needs: [branch-info]
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      # Configure Nx to be able to detect changes between branches when we are in a PR
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: ${{needs.branch-info.outputs.base-branch-name}}
+      # Install Pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.1
+        with:
+          version: "6.x"
+      # Install Node.js
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          cache: 'pnpm'
+      # Install workspace dependencies
+      - name: Install dependencies
+        run: pnpm install
