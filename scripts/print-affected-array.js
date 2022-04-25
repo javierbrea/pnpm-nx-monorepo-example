@@ -11,7 +11,7 @@ const ENCODING_TYPE = "utf8";
 const NEW_LINE_CHAR = "\n";
 
 
-class CliLogger {
+class CliLogs {
   constructor() {
     this._logs = [];
     this.log = this.log.bind(this);
@@ -34,7 +34,7 @@ class CliLogger {
 }
 
 function pnpmRun(...args) {
-  const logData = new CliLogger();
+  const logData = new CliLogs();
   let pnpmProcess;
   return new Promise((resolve, reject) => {
     const processOptions = {
@@ -62,11 +62,6 @@ function pnpmRun(...args) {
 
 function commaSeparatedListToArray(str) {
   return str.trim().split(",").map(element => element.trim()).filter(element => !!element.length);
-}
-
-function getLastLine(str) {
-  console.log(str);
-  return str.trim().split(/\r?\n/).slice(-1)[0];
 }
 
 function getAffectedCommandResult(str) {
