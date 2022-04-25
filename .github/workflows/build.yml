@@ -6,7 +6,6 @@ on:
     branches: 
       - main
       - release
-      - test-docs
   # Execute it on opening any pull request
   pull_request:
 jobs:
