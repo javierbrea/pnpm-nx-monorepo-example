@@ -3,6 +3,7 @@
   "description": "Pnpm and Nx monorepo example",
   "scripts": {
     "nx": "nx",
+    "build:all": "nx run-many --target=build --all",
     "test:unit:affected": "nx affected --target=test:unit",
     "test:unit:all": "nx run-many --target=test:unit --all"
   },
