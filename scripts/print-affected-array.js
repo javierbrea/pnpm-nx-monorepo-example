@@ -61,16 +61,25 @@ function pnpmRun(...args) {
 }
 
 function commaSeparatedListToArray(str) {
-  return str.trim().split(",").map(element => element.trim());
+  return str.trim().split(",").map(element => element.trim()).filter(element => !!element.length);
 }
 
 function getLastLine(str) {
+  console.log(str);
   return str.trim().split(/\r?\n/).slice(-1)[0];
+}
+
+function getAffectedCommandResult(str) {
+  const outputLines = str.trim().split(/\r?\n/);
+  if(outputLines.length > 2) {
+    return outputLines.slice(-1)[0];
+  }
+  return "";
 }
 
 async function affectedProjectsContainingTask(taskName, baseBranch) {
   // pnpm nx print-affected -- --target=[task] --base [base branch] --select=tasks.target.project
-  return commaSeparatedListToArray(getLastLine(
+  return commaSeparatedListToArray(getAffectedCommandResult(
     await pnpmRun("nx", "print-affected", "--", "--target", taskName, "--base", baseBranch, "--select=tasks.target.project")
   ));
 }

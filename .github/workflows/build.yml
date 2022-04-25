@@ -57,5 +57,6 @@ jobs:
         id: get-projects-arrays
         run: |
             node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.base-branch-name}}
+            node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.outputs.base-branch-name}}
             echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.base-branch-name}})"
             echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.outputs.base-branch-name}})"
