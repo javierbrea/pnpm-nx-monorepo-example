@@ -4,6 +4,7 @@ const spawn = require("cross-spawn");
 
 const processArguments = process.argv.slice(2);
 
+const ALL_FLAG = "--all";
 const TASK_NAME = processArguments[0];
 const BASE_BRANCH_NAME = processArguments[1];
 const ROOT_PATH = path.resolve(__dirname, "..");
@@ -52,7 +53,7 @@ function pnpmRun(...args) {
 
     pnpmProcess.on("close", (code) => {
       if (code !== 0) {
-        reject();
+        reject(logData.joinedLogs);
       } else {
         resolve(logData.joinedLogs);
       }
@@ -79,8 +80,16 @@ async function affectedProjectsContainingTask(taskName, baseBranch) {
   ));
 }
 
+async function allProjectsContainingTask(taskName) {
+  // pnpm nx print-affected -- --target=[task] --base [base branch] --select=tasks.target.project
+  return commaSeparatedListToArray(getAffectedCommandResult(
+    await pnpmRun("nx", "print-affected", "--", "--target", taskName, "--files", "package.json", "--select=tasks.target.project")
+  ));
+}
+
 async function printAffectedProjectsContainingTask() {
-  console.log(JSON.stringify(await affectedProjectsContainingTask(TASK_NAME, BASE_BRANCH_NAME)));
+  const projects = BASE_BRANCH_NAME === ALL_FLAG ? await allProjectsContainingTask(TASK_NAME) : await affectedProjectsContainingTask(TASK_NAME, BASE_BRANCH_NAME);
+  console.log(JSON.stringify(projects));
 }
 
 printAffectedProjectsContainingTask().catch(error => {

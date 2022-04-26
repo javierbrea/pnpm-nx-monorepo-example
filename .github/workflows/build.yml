@@ -13,7 +13,11 @@ jobs:
   branch-info:
     runs-on: ubuntu-latest
     steps:
-      # Get branch name to compare with
+      # Get current branch name
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.2
+      # Get base branch name to compare with
       - name: Get base branch name
         id: get-base-branch-name
         run: |
@@ -23,8 +27,9 @@ jobs:
               echo "::set-output name=branch::main"
             fi
     outputs:
-      # Export the branch name as output to be able to use it in other jobs
+      # Export the branch names as output to be able to use it in other jobs
       base-branch-name: ${{ steps.get-base-branch-name.outputs.branch }}
+      branch-name: ${{ steps.branch-name.outputs.current_branch }}
   get-affected:
     needs: [branch-info]
     runs-on: ubuntu-latest
@@ -55,8 +60,13 @@ jobs:
       - name: Get affected
         id: get-projects-arrays
         run: |
-            echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.base-branch-name}})"
-            echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.outputs.base-branch-name}})"
+            if [[ "${{needs.branch-info.outputs.branch-name}}" == "release" ]]; then
+              echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit --all)"
+              echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e --all)"
+            else
+              echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit origin/${{needs.branch-info.outputs.base-branch-name}})"
+              echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e origin/${{needs.branch-info.outputs.base-branch-name}})"
+            fi
     outputs:
       test-unit: ${{ steps.get-projects-arrays.outputs.test-unit }}
       test-e2e: ${{ steps.get-projects-arrays.outputs.test-e2e }}
