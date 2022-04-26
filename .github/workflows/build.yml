@@ -60,7 +60,7 @@ jobs:
       - name: Get affected
         id: get-projects-arrays
         run: |
-            if [[ "${{needs.branch-info.outputs.branch-name}}" == "release" ]]; then
+            if [[ "${{github.event.pull_request.base.ref}}" == "" && "${{needs.branch-info.outputs.branch-name}}" == "release" ]]; then
               echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit --all)"
               echo "::set-output name=test-e2e::$(node scripts/print-affected-array.js test:e2e --all)"
             else
