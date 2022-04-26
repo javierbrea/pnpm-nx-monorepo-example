@@ -59,7 +59,7 @@ jobs:
         run: pnpm install
       - name: Get affected
         id: get-projects-arrays
-        # When not in a PR and the current branch is main, pass --all flag. Otherwise pass base branch
+        # When not in a PR and the current branch is main, pass --all flag. Otherwise pass the base branch
         run: |
             if [[ "${{github.event.pull_request.base.ref}}" == "" && "${{needs.branch-info.outputs.branch-name}}" == "main" ]]; then
               echo "::set-output name=test-unit::$(node scripts/print-affected-array.js test:unit --all)"
