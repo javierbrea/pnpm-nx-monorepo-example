@@ -20,6 +20,6 @@ jobs:
     # Run `build` script in every projects
     - run: pnpm run build:all
     # Publish all packages in the workspace which version still does not exist
-    # - run: pnpm -r publish --no-git-checks
-      # env:
-        # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - run: pnpm -r publish --no-git-checks
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
