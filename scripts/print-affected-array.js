@@ -76,14 +76,14 @@ function getAffectedCommandResult(str) {
 async function affectedProjectsContainingTask(taskName, baseBranch) {
   // pnpm nx print-affected -- --target=[task] --base [base branch] --select=tasks.target.project
   return commaSeparatedListToArray(getAffectedCommandResult(
-    await pnpmRun("nx", "print-affected", "--", "--target", taskName, "--base", baseBranch, "--select=tasks.target.project")
+    await pnpmRun("nx", "print-affected",  "--target", taskName, "--base", baseBranch, "--select=tasks.target.project")
   ));
 }
 
 async function allProjectsContainingTask(taskName) {
-  // pnpm nx print-affected -- --target=[task] --base [base branch] --select=tasks.target.project
+  // pnpm nx print-affected -- --target=[task] --files package.json --select=tasks.target.project
   return commaSeparatedListToArray(getAffectedCommandResult(
-    await pnpmRun("nx", "print-affected", "--", "--target", taskName, "--files", "package.json", "--select=tasks.target.project")
+    await pnpmRun("nx", "print-affected",  "--target", taskName, "--files", "package.json", "--select=tasks.target.project")
   ));
 }
 
