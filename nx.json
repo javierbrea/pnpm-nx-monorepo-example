@@ -1,41 +1,26 @@
 {
-  "extends": "@nrwl/workspace/presets/npm.json",
-  "affected": {
-    "defaultBase": "main"
-  },
-  "npmScope": "@my-scope",
+  "extends": "nx/presets/npm.json",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default"
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
     }
   },
-  "implicitDependencies": {
-    "pnpm-workspace.yaml": "*",
-    "pnpm-lock.yaml": "*",
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"]
     },
-    "nx.json": "*"
+    "test:unit": {
+      "dependsOn": ["build"]
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"]
+    }
   },
-  "targetDependencies": {
-    "build": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ],
-    "test:unit": [
-      {
-        "target": "build",
-        "projects": "self"
-      }
-    ],
-    "test:e2e": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
+  "affected": {
+    "defaultBase": "main"
   }
 }
